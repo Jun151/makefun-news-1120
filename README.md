@@ -4,15 +4,15 @@
 
 # The World Edition
 
-2026年11月20日（金）の世界ニュース30件をまとめた英語版。Version 2は、3件のイラスト付きトップ記事、9件の図解付き記事、3地域欄の短報18件で構成する。小さな世界地図で掲載地域を示し、記事ごとに報道元または公表元を記した。
+2026年11月20日（金）の世界ニュース27件をまとめた英語版。Ver.3は、イラスト付きのトップ3件、数値5項目、経済・政治と紛争・世界短報の各8件で構成する。全記事に発生場所または対象地域、説明、出典を記した。
 
-![The World Edition, 20 November 2026, Version 2](world-edition-newsroom.png)
+![The World Edition, 20 November 2026, Version 3](world-edition-v3.png)
 
-[Version 1の新聞版](world-edition.png)
+[Ver.1](world-edition.png) · [Ver.2](world-edition-newsroom.png)
 
 ## 実行
 
-Python 3.13で、プロジェクト直下から `python main.py` を実行するとVersion 2を出力する。既定の出力先は `/output/entry.png`。標準ライブラリで同梱の完成画像を読み、同じバイト列を書き出す。Version 1は `python main.py --version 1` で選択できる。各版の出力を並べて保存する場合は、出力先を版ごとに指定する。ネットワーク接続や依存パッケージのインストールは不要。
+Python 3.13で、プロジェクト直下から `python main.py` を実行するとVer.3を出力する。既定の出力先は `/output/entry.png`。標準ライブラリで同梱の完成画像を読み、同じバイト列を書き出す。旧版は `--version 1` または `--version 2` で選択できる。各版の出力を並べて保存する場合は、出力先を版ごとに指定する。ネットワーク接続や依存パッケージのインストールは不要。
 
 Windowsでプロジェクト内の `output/entry.png` に出力する場合は、PowerShellで以下を実行する。
 
@@ -24,7 +24,15 @@ Get-FileHash output/entry.png -Algorithm SHA256
 
 ### 画像を編集する場合
 
+`python render_v3.py --fonts <フォントのディレクトリ>` でVer.3のPNGを再描画する。制作用にPillow 12.3.0とWindowsのArial、Georgiaを使用した。挿絵は各記事の場面を伝えるオリジナルの図解。画像の出力処理にPillowやフォントは不要。
+
 `render_newsroom.py` はVersion 2の制作用スクリプト。Pillow 12.3.0、WindowsのArialとGeorgia、Natural Earth 1:110m陸域GeoJSONのローカルコピーを用意し、`python render_newsroom.py <land.geojson>` で `world-edition-newsroom.png` を生成する。Version 1の制作用スクリプトは `render.py`。フォントの保存先は `--fonts` で指定できる。 [Natural Earth 陸域データ](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_land.geojson)
+
+### Ver.3の出典と日付
+
+[編集台帳](edition_v3.py)に記事ID、発生日、確認できた報道・公表日時、場所、分野、見出し、要約、数値、出典URL、確認状態を記録した。確認日時は2026年11月21日23:28〜23:34 JST。日時が不明な箇所は時刻未確認とし、記録した報道時刻を他媒体も含む最初の報道時刻とはみなしていない。
+
+現地で11月20日に起きた出来事、またはその日に公になった新情報を掲載した。ミャンマーの判決と深圳会談は19日で、20日の政府の反応・米大統領発言を採用した。ペルーの地震は現地20日19:09（UTC 21日00:09）。ガザの死者数は媒体間に差があるため紙面から外した。 [ペルー・AP](https://apnews.com/article/d9c0a1de6be970d6a5a36993c607f29f) · [ガザ・Al Jazeera](https://www.aljazeera.com/news/2026/11/20/israeli-drone-attacks-kill-seven-palestinians-in-central-gaza) · [グプタ被告判決・米司法省](https://www.justice.gov/usao-sdny/pr/indian-national-sentenced-235-months-prison-plotting-assassinate-us-citizen-new-york)
 
 ### Version 2の出典と掲載基準
 
@@ -54,7 +62,7 @@ Get-FileHash output/entry.png -Algorithm SHA256
 
 1. 承認後、GitHub上に応募者が所有する新規公開リポジトリを作成する。リポジトリ名の候補は `the-world-edition-20261120`。GitHub AboutのWebsiteに公式課題URLを設定し、トピックに `makefun` を追加する。
 2. 本READMEの先頭に、確定したOWNERとREPOを含む公式の順位・賞金バッジを追加し、それぞれ公式リーダーボード・課題ページにリンクする。画像URLは `https://make.fun/badge/news-image-20261120/OWNER/REPO/rank.svg` と `https://make.fun/badge/news-image-20261120/OWNER/REPO/reward.svg`。make.funにGitHubリポジトリ所有者としてログインするか、公式要件に従い紐付け済みの公開ウォレットアドレスを `.makefun/owner.json` に記載する。
-3. 応募内容をコミットし、GitHubへpushする。提出するコミットは `git rev-parse HEAD` で取得する。生成した `output/`、公式CLIキット、会話ログ、キーやウォレットファイルは提出対象から除外する。同梱する画像は `world-edition-newsroom.png` と、保存用の `world-edition.png`。
+3. 応募内容をコミットし、GitHubへpushする。提出するコミットは `git rev-parse HEAD` で取得する。生成した `output/`、公式CLIキット、会話ログ、キーやウォレットファイルは提出対象から除外する。完成画像は `world-edition-v3.png`。
 4. 下記のローカル検査で、元のCodexログを公式CLIで再収集し、最終コミットを検査する。ログバンドルは、提出前に収録内容と公式CLIの伏字処理を確認する。
 5. 承認後、公式ガイドに従い、make.funアカウントと署名用Solanaウォレットを紐付ける。最終承認後に、公式CLIで署名と提出を行い、返った提出IDのステータスを確認する。
 

@@ -7,6 +7,7 @@ __pycache__/
 /wallet.json
 /*keypair*.json
 /transcripts*.tar.gz
+/submission-logs/
 /*.bundle
 /news-image-20261120-kit/
 /makefun-kit.tar.gz

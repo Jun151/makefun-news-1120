@@ -1,4 +1,4 @@
-"""Export Version 2 by default, or select the preserved Version 1."""
+"""Export Version 3 by default, with the two earlier editions selectable."""
 
 from argparse import ArgumentParser
 from os import environ
@@ -7,9 +7,13 @@ from pathlib import Path
 
 def main() -> None:
     parser = ArgumentParser(description=__doc__)
-    parser.add_argument("--version", choices=("1", "2"), default="2")
-    version = parser.parse_args().version
-    filename = {"1": "world-edition.png", "2": "world-edition-newsroom.png"}[version]
+    editions = {
+        "1": "world-edition.png",
+        "2": "world-edition-newsroom.png",
+        "3": "world-edition-v3.png",
+    }
+    parser.add_argument("--version", choices=tuple(editions), default="3")
+    filename = editions[parser.parse_args().version]
     artwork = Path(__file__).resolve().with_name(filename)
     png = artwork.read_bytes()
     if not png.startswith(b"\x89PNG\r\n\x1a\n") or len(png) > 1_048_576:
