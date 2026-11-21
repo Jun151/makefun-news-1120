@@ -1,0 +1,13 @@
+/output/
+__pycache__/
+*.py[cod]
+/.venv/
+/.env
+/.env.*
+/wallet.json
+/*keypair*.json
+/transcripts*.tar.gz
+/*.bundle
+/news-image-20261120-kit/
+/makefun-kit.tar.gz
+/land.geojson
