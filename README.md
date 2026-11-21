@@ -4,15 +4,15 @@
 
 # The World Edition
 
-2026年11月20日（金）の世界ニュース27件をまとめた英語版。Ver.3は、イラスト付きのトップ3件、数値5項目、経済・政治と紛争・世界短報の各8件で構成する。全記事に発生場所または対象地域、説明、出典を記した。
+2026年11月20日（金）の世界ニュース18件をまとめた英語版。Ver.4は「3 BIG STORIES」を上段に置き、同じ番号で挿絵、位置図、地名を結び付けた。下段は経済、政治と紛争、世界短報の各5件。記事ごとに場所、説明、出典を記した。
 
-![The World Edition, 20 November 2026, Version 3](world-edition-v3.png)
+![The World Edition, 20 November 2026, Version 4](world-edition-v4.png)
 
-[Ver.1](world-edition.png) · [Ver.2](world-edition-newsroom.png)
+[Ver.1](world-edition.png) · [Ver.2](world-edition-newsroom.png) · [Ver.3](world-edition-v3.png)
 
 ## 実行
 
-Python 3.13で、プロジェクト直下から `python main.py` を実行するとVer.3を出力する。既定の出力先は `/output/entry.png`。標準ライブラリで同梱の完成画像を読み、同じバイト列を書き出す。旧版は `--version 1` または `--version 2` で選択できる。各版の出力を並べて保存する場合は、出力先を版ごとに指定する。ネットワーク接続や依存パッケージのインストールは不要。
+Python 3.13で、プロジェクト直下から `python main.py` を実行するとVer.4を出力する。既定の出力先は `/output/entry.png`。標準ライブラリで同梱の完成画像を読み、同じバイト列を書き出す。旧版は `--version 1`、`--version 2`、`--version 3` で選択できる。各版の出力を並べて保存する場合は、出力先を版ごとに指定する。ネットワーク接続や依存パッケージのインストールは不要。
 
 Windowsでプロジェクト内の `output/entry.png` に出力する場合は、PowerShellで以下を実行する。
 
@@ -23,6 +23,8 @@ Get-FileHash output/entry.png -Algorithm SHA256
 ```
 
 ### 画像を編集する場合
+
+`python render_v4.py <land.geojson> --fonts <フォントのディレクトリ>` でVer.4を再描画できる。描画にはPillow 12.3.0、ArialとGeorgia、Natural Earthの陸域データのローカルコピーを使う。採用記事IDは `render_v4.py` にあり、出典は [編集台帳](edition_v3.py) の対応する記事に記載した。 [Natural Earth 陸域データ](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_land.geojson)
 
 `python render_v3.py --fonts <フォントのディレクトリ>` でVer.3のPNGを再描画する。制作用にPillow 12.3.0とWindowsのArial、Georgiaを使用した。挿絵は各記事の場面を伝えるオリジナルの図解。画像の出力処理にPillowやフォントは不要。
 
@@ -62,7 +64,7 @@ Get-FileHash output/entry.png -Algorithm SHA256
 
 1. 承認後、GitHub上に応募者が所有する新規公開リポジトリを作成する。リポジトリ名の候補は `the-world-edition-20261120`。GitHub AboutのWebsiteに公式課題URLを設定し、トピックに `makefun` を追加する。
 2. 本READMEの先頭に、確定したOWNERとREPOを含む公式の順位・賞金バッジを追加し、それぞれ公式リーダーボード・課題ページにリンクする。画像URLは `https://make.fun/badge/news-image-20261120/OWNER/REPO/rank.svg` と `https://make.fun/badge/news-image-20261120/OWNER/REPO/reward.svg`。make.funにGitHubリポジトリ所有者としてログインするか、公式要件に従い紐付け済みの公開ウォレットアドレスを `.makefun/owner.json` に記載する。
-3. 応募内容をコミットし、GitHubへpushする。提出するコミットは `git rev-parse HEAD` で取得する。生成した `output/`、公式CLIキット、会話ログ、キーやウォレットファイルは提出対象から除外する。完成画像は `world-edition-v3.png`。
+3. 応募内容をコミットし、GitHubへpushする。提出するコミットは `git rev-parse HEAD` で取得する。生成した `output/`、公式CLIキット、会話ログ、キーやウォレットファイルは提出対象から除外する。完成画像は `world-edition-v4.png`。
 4. 下記のローカル検査で、元のCodexログを公式CLIで再収集し、最終コミットを検査する。ログバンドルは、提出前に収録内容と公式CLIの伏字処理を確認する。
 5. 承認後、公式ガイドに従い、make.funアカウントと署名用Solanaウォレットを紐付ける。最終承認後に、公式CLIで署名と提出を行い、返った提出IDのステータスを確認する。
 

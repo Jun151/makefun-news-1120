@@ -1,4 +1,4 @@
-"""Export Version 3 by default, with the two earlier editions selectable."""
+"""Export Version 4 by default, with the earlier editions selectable."""
 
 from argparse import ArgumentParser
 from os import environ
@@ -11,8 +11,9 @@ def main() -> None:
         "1": "world-edition.png",
         "2": "world-edition-newsroom.png",
         "3": "world-edition-v3.png",
+        "4": "world-edition-v4.png",
     }
-    parser.add_argument("--version", choices=tuple(editions), default="3")
+    parser.add_argument("--version", choices=tuple(editions), default="4")
     filename = editions[parser.parse_args().version]
     artwork = Path(__file__).resolve().with_name(filename)
     png = artwork.read_bytes()
