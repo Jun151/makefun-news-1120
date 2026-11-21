@@ -28,7 +28,7 @@ Get-FileHash output/entry.png -Algorithm SHA256
 
 ### Ver.5の挿絵
 
-キーウは被害と一時的な通行制限が報じられた橋をもとに、川と街並みを背景にした編集イラストにした。描かれた傷やバリケードの配置は模式的な表現。COP31は化石燃料を巡る合意案を挟んだ交渉の情景、核戦力報道は米中ロの国旗と核リスクの警告標識を組み合わせた図として描いた。紙面本文は19日の深圳会談と20日の発言を区別している。 [キーウ・通行情報](https://www.pravda.com.ua/eng/news/2026/11/20/8063728/index.amp) · [COP31・The Guardian](https://www.theguardian.com/environment/2026/nov/20/cop31-talks-overtime-fossil-fuels-vanish-from-draft-deal) · [深圳共同宣言](https://www.fmprc.gov.cn/eng/xw/zyxw/202611/t20261119_12063224.html) · [20日の会見・AP](https://apnews.com/article/286391edaacc7e8544dc0dc023e253fb)
+キーウでは、報道で確認した橋の損傷と一時的な通行制限をもとに、川と街並みを背にした橋を大きく描いた。損傷やバリケードの形状は編集上の表現。COP31では、交渉に臨む代表者を大きく置き、合意案から化石燃料への言及が外れたことを紙面上の取り消し線で表した。核戦力報道では、会見中のトランプ氏の顔と上半身を中心に描き、米中ロの国旗と警告標識は記事の背景を示す要素として左右に配置した。本文では19日の深圳会談と20日の発言を区別した。 [キーウ・通行情報](https://www.pravda.com.ua/eng/news/2026/11/20/8063728/index.amp) · [COP31・The Guardian](https://www.theguardian.com/environment/2026/nov/20/cop31-talks-overtime-fossil-fuels-vanish-from-draft-deal) · [深圳共同宣言](https://www.fmprc.gov.cn/eng/xw/zyxw/202611/t20261119_12063224.html) · [20日の会見・AP](https://apnews.com/article/286391edaacc7e8544dc0dc023e253fb)
 
 ### 旧版の再描画
 
