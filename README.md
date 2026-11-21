@@ -4,15 +4,15 @@
 
 # The World Edition
 
-2026年11月20日（金）の世界ニュース18件をまとめた英語版。Ver.4は「3 BIG STORIES」の図解に続き、全18件を番号で引ける世界地図を掲載した。下段は経済、政治と紛争、世界短報の各5件。記事ごとに場所、説明、出典を記した。
+2026年11月20日（金）の世界ニュース27件をまとめた英語版。Ver.5はVer.3の紙面に戻し、上段に「3 BIG STORIES」の見出しと新しい挿絵を配置した。中央の数値帯、下段の3分野各8件、場所、出典、DATE CHECKはVer.3と同じ。
 
-![The World Edition, 20 November 2026, Version 4](world-edition-v4.png)
+![The World Edition, 20 November 2026, Version 5](world-edition-v5.png)
 
-[Ver.1](world-edition.png) · [Ver.2](world-edition-newsroom.png) · [Ver.3](world-edition-v3.png)
+[Ver.1](world-edition.png) · [Ver.2](world-edition-newsroom.png) · [Ver.3](world-edition-v3.png) · [Ver.4](world-edition-v4.png)
 
 ## 実行
 
-Python 3.13で、プロジェクト直下から `python main.py` を実行するとVer.4を出力する。既定の出力先は `/output/entry.png`。標準ライブラリで同梱の完成画像を読み、同じバイト列を書き出す。旧版は `--version 1`、`--version 2`、`--version 3` で選択できる。各版の出力を並べて保存する場合は、出力先を版ごとに指定する。ネットワーク接続や依存パッケージのインストールは不要。
+Python 3.13で、プロジェクト直下から `python main.py` を実行するとVer.5を出力する。既定の出力先は `/output/entry.png`。標準ライブラリで同梱の完成画像を読み、同じバイト列を書き出す。旧版は `--version 1` から `--version 4` で選択できる。各版の出力を並べて保存する場合は、出力先を版ごとに指定する。ネットワーク接続や依存パッケージのインストールは不要。
 
 Windowsでプロジェクト内の `output/entry.png` に出力する場合は、PowerShellで以下を実行する。
 
@@ -23,6 +23,14 @@ Get-FileHash output/entry.png -Algorithm SHA256
 ```
 
 ### 画像を編集する場合
+
+`python render_v5.py` でVer.5を再描画できる。制作時は Pillow 12.3.0 と Arial、Georgia を使用する。フォントの場所は `--fonts` で指定できる。記事と出典は [Ver.3の編集台帳](edition_v3.py) を共用している。
+
+### Ver.5の挿絵
+
+キーウは被害と一時的な通行制限が報じられた橋をもとに、川と街並みを背景にした編集イラストにした。描かれた傷やバリケードの配置は模式的な表現。COP31は化石燃料を巡る合意案を挟んだ交渉の情景、核戦力報道は米中ロの国旗と核リスクの警告標識を組み合わせた図として描いた。紙面本文は19日の深圳会談と20日の発言を区別している。 [キーウ・通行情報](https://www.pravda.com.ua/eng/news/2026/11/20/8063728/index.amp) · [COP31・The Guardian](https://www.theguardian.com/environment/2026/nov/20/cop31-talks-overtime-fossil-fuels-vanish-from-draft-deal) · [深圳共同宣言](https://www.fmprc.gov.cn/eng/xw/zyxw/202611/t20261119_12063224.html) · [20日の会見・AP](https://apnews.com/article/286391edaacc7e8544dc0dc023e253fb)
+
+### 旧版の再描画
 
 `python render_v4.py` でVer.4を再描画できる。描画にはPillow 12.3.0、ArialとGeorgia、同梱のNatural Earthの陸域データを使う。フォントの場所は `--fonts` で指定できる。採用記事IDと座標は [render_v4.py](render_v4.py)、出典は [編集台帳](edition_v3.py) に記載した。 [Natural Earth 陸域データ](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_land.geojson)
 
@@ -70,7 +78,7 @@ Get-FileHash output/entry.png -Algorithm SHA256
 
 1. 承認後、GitHub上に応募者が所有する新規公開リポジトリを作成する。リポジトリ名の候補は `the-world-edition-20261120`。GitHub AboutのWebsiteに公式課題URLを設定し、トピックに `makefun` を追加する。
 2. 本READMEの先頭に、確定したOWNERとREPOを含む公式の順位・賞金バッジを追加し、それぞれ公式リーダーボード・課題ページにリンクする。画像URLは `https://make.fun/badge/news-image-20261120/OWNER/REPO/rank.svg` と `https://make.fun/badge/news-image-20261120/OWNER/REPO/reward.svg`。make.funにGitHubリポジトリ所有者としてログインするか、公式要件に従い紐付け済みの公開ウォレットアドレスを `.makefun/owner.json` に記載する。
-3. 応募内容をコミットし、GitHubへpushする。提出するコミットは `git rev-parse HEAD` で取得する。生成した `output/`、公式CLIキット、会話ログ、キーやウォレットファイルは提出対象から除外する。完成画像は `world-edition-v4.png`。
+3. 応募内容をコミットし、GitHubへpushする。提出するコミットは `git rev-parse HEAD` で取得する。生成した `output/`、公式CLIキット、会話ログ、キーやウォレットファイルは提出対象から除外する。完成画像は `world-edition-v5.png`。
 4. 下記のローカル検査で、元のCodexログを公式CLIで再収集し、最終コミットを検査する。ログバンドルは、提出前に収録内容と公式CLIの伏字処理を確認する。
 5. 承認後、公式ガイドに従い、make.funアカウントと署名用Solanaウォレットを紐付ける。最終承認後に、公式CLIで署名と提出を行い、返った提出IDのステータスを確認する。
 

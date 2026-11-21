@@ -172,7 +172,7 @@ def draw_washington(art):
     art.oval((148, 167, 164, 183), "#493631")
 
 
-def render(fonts, output):
+def render(fonts, output, *, lead_scenes=None):
     sheet = Canvas(PAGE, PAGE, PAPER, fonts)
     stories = (*LEADS, *(story for _, section in SECTIONS for story in section))
     figures = {story.id: story for story in stories}
@@ -182,14 +182,21 @@ def render(fonts, output):
     sheet.text(RIGHT, 56, f"{len(stories)} STORIES", 21, anchor="rt")
     sheet.text(LEFT, 75, "FRIDAY 20 NOVEMBER 2026", 20, RED)
 
+    art_top, art_height = 98, 199
+    if lead_scenes is None:
+        lead_scenes = (draw_kyiv, draw_antalya, draw_washington)
+    else:
+        sheet.rect((LEFT, 98, RIGHT, 122), RED)
+        sheet.text(LEFT+9, 101, "3 BIG STORIES", 20, PAPER, SERIF)
+        art_top, art_height = 128, 169
+
     for index, (story, bg, scene) in enumerate(zip(
-        LEADS, ("#8c7778", "#214b45", "#223b57"),
-        (draw_kyiv, draw_antalya, draw_washington), strict=True,
+        LEADS, ("#8c7778", "#214b45", "#223b57"), lead_scenes, strict=True,
     )):
         x = LEFT + PITCH * index
-        art = Canvas(COLUMN, 199, bg, fonts)
+        art = Canvas(COLUMN, art_height, bg, fonts)
         scene(art)
-        sheet.image.paste(art.image, pixels((x, 98)))
+        sheet.image.paste(art.image, pixels((x, art_top)))
         available = COLUMN - sheet.width(story.source, 13, BOLD) - 8
         sheet.text(x, 304, f"{story.where} / {story.beat}".upper(), 13, RED, limit=available)
         sheet.text(x + COLUMN, 304, story.source, 13, anchor="rt")
