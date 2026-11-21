@@ -1,3 +1,7 @@
+
+[![Bounty](https://make.fun/badge/news-image-20261120.svg)](https://make.fun/bounty/news-image-20261120)
+[![Rank](https://make.fun/badge/news-image-20261120/Jun151/makefun-news-1120/rank.svg)](https://make.fun/bounty/news-image-20261120)
+[![Reward](https://make.fun/badge/news-image-20261120/Jun151/makefun-news-1120/reward.svg)](https://make.fun/bounty/news-image-20261120)
 # The World Edition
 
 [![make.fun · news-image-20261120](https://make.fun/badge/news-image-20261120.svg)](https://make.fun/bounty/news-image-20261120)
