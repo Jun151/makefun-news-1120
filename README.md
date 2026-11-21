@@ -4,7 +4,7 @@
 
 # The World Edition
 
-2026年11月20日（金）の世界ニュース18件をまとめた英語版。Ver.4は「3 BIG STORIES」を上段に置き、同じ番号で挿絵、位置図、地名を結び付けた。下段は経済、政治と紛争、世界短報の各5件。記事ごとに場所、説明、出典を記した。
+2026年11月20日（金）の世界ニュース18件をまとめた英語版。Ver.4は「3 BIG STORIES」の図解に続き、全18件を番号で引ける世界地図を掲載した。下段は経済、政治と紛争、世界短報の各5件。記事ごとに場所、説明、出典を記した。
 
 ![The World Edition, 20 November 2026, Version 4](world-edition-v4.png)
 
@@ -24,7 +24,13 @@ Get-FileHash output/entry.png -Algorithm SHA256
 
 ### 画像を編集する場合
 
-`python render_v4.py <land.geojson> --fonts <フォントのディレクトリ>` でVer.4を再描画できる。描画にはPillow 12.3.0、ArialとGeorgia、Natural Earthの陸域データのローカルコピーを使う。採用記事IDは `render_v4.py` にあり、出典は [編集台帳](edition_v3.py) の対応する記事に記載した。 [Natural Earth 陸域データ](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_land.geojson)
+`python render_v4.py` でVer.4を再描画できる。描画にはPillow 12.3.0、ArialとGeorgia、同梱のNatural Earthの陸域データを使う。フォントの場所は `--fonts` で指定できる。採用記事IDと座標は [render_v4.py](render_v4.py)、出典は [編集台帳](edition_v3.py) に記載した。 [Natural Earth 陸域データ](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_land.geojson)
+
+### Ver.4の図解と地図
+
+掲載18件を2026年11月22日JSTに再照合した。キーウの3橋は市長が発表した橋名を採用し、ドニプロ川を渡る関係を模式図で示した。被害箇所の形状や程度は模式図に反映していない。「11 REGIONS」はウクライナ国内で緊急停電が起きた地域数。COP31は20日に協議が延長された時点を掲載し、深圳の3か国会談（19日）とワシントンでの発言（20日）を時系列で区別した。 [キーウの橋・Kyiv Independent](https://kyivindependent.com/russia-launches-mass-missile-attack-against-ukraine-after-putin-vows-revenge/) · [停電・AP](https://apnews.com/article/433e18f00cbd37a2a9da94e60fce0e07) · [COP31・UNFCCC](https://unfccc.int/cop31) · [深圳の共同宣言](https://www.fmprc.gov.cn/eng/xw/zyxw/202611/t20261119_12063224.html)
+
+番号の引き出し線は発生地、会場、発表地、または地域の代表地点を指す。複数地点を扱う01はキーウ、09は中部ガザのデイル・アルバラフ、10はイエメンのホデイダ、15はセントジョンズ川沿いのサンフォードを採用。日本、台湾、チリ、デンマーク、南アフリカ、ブラジルは記事の対象地域を示すため、東京、台北、サンティアゴ、コペンハーゲン、プレトリア、ブラジリアを代表点とした。ペルー地震の座標は現地当局の発表を使用した。 [Natural Earth 地名データ](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/) · [GeoNames・デイル・アルバラフ](https://www.geonames.org/281141/dayr-al-balah.html) · [GeoNames・コペンハーゲン](https://www.geonames.org/2618424/copenhagen.html) · [ペルー防災当局](https://portal.indeci.gob.pe/emergencias/reporte-preliminar-n-o-1159-20-11-2026-coen-indeci-1940-horas-sismo-de-magnitud-6-7-con-epicentro-en-el-junin-junin/)
 
 `python render_v3.py --fonts <フォントのディレクトリ>` でVer.3のPNGを再描画する。制作用にPillow 12.3.0とWindowsのArial、Georgiaを使用した。挿絵は各記事の場面を伝えるオリジナルの図解。画像の出力処理にPillowやフォントは不要。
 

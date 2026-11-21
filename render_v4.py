@@ -1,14 +1,17 @@
-"""Render the three-lead Ver.4 with an atlas strip and fifteen selected briefs."""
+"""Render Ver.4 with three explanatory panels and an atlas of all 18 stories."""
 
 import argparse
 import json
+from itertools import combinations
+from math import hypot
 from pathlib import Path
 
 from PIL import Image
 
 from edition_v3 import LEADS, SECTIONS
 from render_v3 import BOLD, COLUMN, INK, LEFT, PAGE, PAPER, PITCH, RED, RIGHT, RULE, SERIF
-from render_v3 import Canvas, draw_antalya, draw_kyiv, draw_washington, pixels
+from render_v3 import Canvas, pixels
+from v4_illustrations import climate_talks, kyiv_bridges, nuclear_timeline
 
 
 SELECTED = (
@@ -17,16 +20,15 @@ SELECTED = (
     ("peru", "flood", "children", "brazil", "skating"),
 )
 
-PLACES = (
-    ("KYIV / EASTERN POLAND", ("Strikes on Kyiv bridges", "Missiles fall in NATO territory"), "#87372e"),
-    ("ANTALYA, TÜRKİYE", ("Mediterranean host city", "UN climate talks run late"), "#1f5446"),
-    ("WASHINGTON, U.S.", ("Nov 20 White House remarks", "Shenzhen summit: Nov 19"), "#234866"),
-)
+ECONOMY = "#215448"
+POLITICS = "#785243"
+BRIEFS = "#235071"
+LAND_DATA = Path(__file__).with_name("assets") / "ne_110m_land.geojson"
 
 ART_NOTES = (
-    ("KYIV RIVER CROSSING", "3 bridges hit"),
-    ("CLIMATE SUMMIT", "Draft omits fossil fuels"),
-    ("WHITE HOUSE", "Nuclear buildup warning"),
+    ("KYIV RIVER CROSSINGS", "3 bridges hit"),
+    ("CLIMATE SUMMIT", "Deadline passes"),
+    ("U.S. / CHINA / RUSSIA", "Two days of diplomacy"),
 )
 
 LEAD_COPY = (
@@ -35,13 +37,52 @@ LEAD_COPY = (
     "Trump spoke after U.S., Chinese and Russian leaders pledged nuclear-risk talks in Shenzhen.",
 )
 
+# Verified event, venue or representative location, longitude/latitude, and label center.
+# Country-wide stories use representative points as documented in README.md.
+MAP_POINTS = {
+    "kyiv": ("Kyiv", 30.515, 50.435, 589, 525),
+    "cop31": ("Antalya", 30.698, 36.892, 609, 551),
+    "nuclear": ("Washington, D.C.", -77.011, 38.901, 310, 525),
+    "stocks": ("New York City", -73.996, 40.722, 388, 527),
+    "japan": ("Tokyo", 139.749, 35.687, 801, 545),
+    "uk-eu": ("Brussels", 4.331, 50.835, 475, 530),
+    "taiwan": ("Taipei", 121.568, 25.036, 766, 581),
+    "chile": ("Santiago", -70.651, -33.440, 336, 620),
+    "gaza": ("Deir al-Balah", 34.35, 31.42, 618, 576),
+    "yemen": ("Al Hudaydah", 42.951, 14.800, 624, 603),
+    "sudan": ("Ed Damazin", 34.350, 11.770, 530, 582),
+    "myanmar": ("Naypyitaw", 96.117, 19.769, 687, 592),
+    "denmark": ("Copenhagen", 12.565, 55.671, 510, 518),
+    "peru": ("Junín epicentral area", -76.19, -10.97, 309, 582),
+    "flood": ("Sanford, central St. Johns River", -81.280, 28.790, 298, 552),
+    "children": ("Pretoria", 28.227, -25.705, 542, 618),
+    "brazil": ("Brasília", -47.918, -15.781, 423, 614),
+    "skating": ("Helsinki", 24.932, 60.164, 550, 517),
+}
 
-def draw_locations(sheet, land_path):
-    sheet.rect((LEFT, 487, RIGHT, 600), "#eee2cd")
-    sheet.text(42, 497, "WHERE IT HAPPENED", 17, INK, SERIF)
+
+def badge(sheet, number, x, y, color, radius, size):
+    sheet.oval((x-radius, y-radius, x+radius, y+radius), color)
+    sheet.text(x, y, f"{number:02}", size, PAPER, anchor="mm")
+
+
+def draw_locations(sheet, land_path, stories):
+    sheet.rect((LEFT, 482, RIGHT, 635), "#ede2cd")
+    sheet.text(42, 491, "WHERE IT HAPPENED", 19, INK, SERIF)
+    for x, label, color in (
+        (426, "01–03  TOP STORIES", RED),
+        (558, "04–08  ECONOMY", ECONOMY),
+        (674, "09–13  POLITICS & CONFLICT", POLITICS),
+        (842, "14–18  WORLD BRIEFS", BRIEFS),
+    ):
+        sheet.oval((x, 495, x+7, 502), color)
+        sheet.text(x+12, 493, label, 10, color)
+
+    def atlas_x(x):
+        return 512 + (x - 512) * 1.12
 
     def project(lon, lat):
-        return 42 + (lon + 180) * 0.735, 519 + (84 - lat) * 0.51
+        return atlas_x(153 + (lon + 180) * 1.91), 517 + (80 - lat) * 0.79
 
     data = json.loads(land_path.read_text(encoding="utf-8"))
     for feature in data["features"]:
@@ -52,28 +93,26 @@ def draw_locations(sheet, land_path):
         for exterior, *_ in shapes:
             if max(lat for _, lat in exterior) >= -60:
                 points = tuple(value for lon, lat in exterior
-                               for value in project(lon, max(lat, -60)))
-                sheet.polygon(points, "#9ba99b")
+                               for value in project(lon, min(80, max(lat, -58))))
+                sheet.polygon(points, "#acb3a2")
 
-    markers = ((30.52, 50.45, 225, 524), (30.70, 36.90, 225, 560), (-77.04, 38.91, 105, 528))
-    poland_x, poland_y = project(22.9, 50.6)
-    sheet.oval((poland_x-2, poland_y-2, poland_x+2, poland_y+2), PLACES[0][2])
-    for index, ((lon, lat, x, y), (name, lines, color)) in enumerate(
-        zip(markers, PLACES, strict=True), start=1
-    ):
+    markers = []
+    for number, (story, color) in enumerate(stories, start=1):
+        _, lon, lat, x, y = MAP_POINTS[story.id]
+        x = atlas_x(x)
+        radius = 12 if number <= 3 else 10
+        if not (LEFT+radius <= x <= RIGHT-radius and 505+radius <= y <= 635-radius):
+            raise ValueError(f"Map label outside its area: {story.id}")
+        markers.append((number, color, x, y, radius))
         px, py = project(lon, lat)
-        sheet.line((px, py, x, y), color, 2)
-        sheet.oval((px-3, py-3, px+3, py+3), color)
-        sheet.oval((x-10, y-10, x+10, y+10), color)
-        sheet.text(x, y, str(index), 13, PAPER, anchor="mm")
-
-        left = 319 + (index-1) * 226
-        sheet.line((left, 511, left, 583), RULE)
-        sheet.oval((left+12, 518, left+36, 542), color)
-        sheet.text(left+24, 530, str(index), 14, PAPER, anchor="mm")
-        sheet.text(left+43, 523, name, 13, color, limit=178)
-        for row, words in enumerate(lines):
-            sheet.text(left+13, 550+17*row, words, 14, face=BOLD, limit=207)
+        sheet.line((px, py, x, y), PAPER, 3)
+        sheet.line((px, py, x, y), color, 1.25)
+        sheet.oval((px-2, py-2, px+2, py+2), color)
+    for first, second in combinations(markers, 2):
+        if hypot(first[2]-second[2], first[3]-second[3]) < first[4]+second[4]+2:
+            raise ValueError(f"Overlapping map labels: {first[0]} and {second[0]}")
+    for number, color, x, y, radius in markers:
+        badge(sheet, number, x, y, color, radius, 12 if number <= 3 else 11)
 
 
 def render(land_path, fonts, output):
@@ -82,28 +121,30 @@ def render(land_path, fonts, output):
     sheet.text(LEFT, 25, "THE WORLD EDITION", 49, face=SERIF)
     sheet.text(LEFT, 75, "FRIDAY 20 NOVEMBER 2026", 20, RED)
     sheet.text(RIGHT, 42, "WORLD NEWS IN ONE IMAGE", 15, RED, anchor="rt")
-    story_count = len(LEADS) + sum(map(len, SELECTED))
-    sheet.text(RIGHT, 66, f"{story_count} STORIES", 19, anchor="rt")
+    sections = []
+    for (name, stories), ids, color in zip(SECTIONS, SELECTED,
+                                            (ECONOMY, POLITICS, BRIEFS), strict=True):
+        by_id = {story.id: story for story in stories}
+        sections.append((name, tuple(by_id[story_id] for story_id in ids), color))
+    mapped_stories = [(story, RED) for story in LEADS]
+    mapped_stories.extend((story, color) for _, stories, color in sections for story in stories)
+    if len(mapped_stories) != len(MAP_POINTS) or {s.id for s, _ in mapped_stories} != MAP_POINTS.keys():
+        raise ValueError("Every article must have exactly one map point")
+    sheet.text(RIGHT, 66, f"{len(mapped_stories)} STORIES", 19, anchor="rt")
 
     sheet.rect((LEFT, 106, RIGHT, 135), RED)
     sheet.text(LEFT+10, 110, "3 BIG STORIES", 23, PAPER, SERIF)
-    scenes = (draw_kyiv, draw_antalya, draw_washington)
-    backgrounds = ("#8c7778", "#214b45", "#223b57")
-    for index, (story, scene, bg, (scene_label, finding), (_, _, color), summary) in enumerate(
-        zip(LEADS, scenes, backgrounds, ART_NOTES, PLACES, LEAD_COPY, strict=True), start=1
+    scenes = (kyiv_bridges, climate_talks, nuclear_timeline)
+    for index, (story, scene, (scene_label, finding), summary) in enumerate(
+        zip(LEADS, scenes, ART_NOTES, LEAD_COPY, strict=True), start=1
     ):
         x = LEFT + (index-1)*PITCH
-        art = Canvas(COLUMN, 199, bg, fonts)
+        art = Canvas(COLUMN, 199, PAPER, fonts)
         scene(art)
-        if story.id == "kyiv":
-            art.line((157, 132, 120, 33, 106, 33), "#f6e3b6", 1.5)
-            art.oval((154, 129, 160, 135), "#f6e3b6")
-            art.rect((10, 22, 107, 43), "#28343b")
-            art.text(16, 27, "BRIDGE DAMAGE", 10, PAPER)
         sheet.image.paste(art.image, pixels((x, 145)))
-        sheet.rect((x, 344, x+COLUMN-1, 373), color)
-        sheet.oval((x+7, 348, x+27, 368), PAPER)
-        sheet.text(x+17, 358, str(index), 12, color, anchor="mm")
+        sheet.rect((x, 344, x+COLUMN-1, 373), RED)
+        sheet.oval((x+6, 347, x+28, 369), PAPER)
+        sheet.text(x+17, 358, f"{index:02}", 11, RED, anchor="mm")
         note_width = COLUMN - 49 - sheet.width(finding, 13, BOLD)
         sheet.text(x+34, 353, scene_label, 11, PAPER, limit=note_width)
         sheet.text(x+COLUMN-7, 352, finding, 13, PAPER, anchor="rt")
@@ -114,24 +155,24 @@ def render(land_path, fonts, output):
             sheet.text(x, 398+25*row, words, 22, face=SERIF, limit=COLUMN)
         sheet.paragraph(x, 449, summary, 14, COLUMN, 2, 15)
 
-    draw_locations(sheet, land_path)
+    draw_locations(sheet, land_path, mapped_stories)
 
-    for col, ((name, stories), ids) in enumerate(zip(SECTIONS, SELECTED, strict=True)):
+    for col, (name, stories, color) in enumerate(sections):
         x = LEFT + col*PITCH
-        color = ("#1f5446", "#87372e", "#234866")[col]
-        sheet.rect((x, 613, x+COLUMN, 640), color)
-        sheet.text(x+9, 619, name, 17, PAPER, SERIF)
-        by_id = {story.id: story for story in stories}
-        for row, story_id in enumerate(ids):
-            story = by_id[story_id]
-            y = 650 + 61*row
-            available = COLUMN - sheet.width(story.source, 11, BOLD) - 6
-            sheet.text(x, y, f"{story.where} / {story.beat}".upper(), 11, color, limit=available)
+        sheet.rect((x, 642, x+COLUMN, 666), color)
+        sheet.text(x+9, 647, name, 17, PAPER, SERIF)
+        for row, story in enumerate(stories):
+            number = len(LEADS) + sum(len(entries) for _, entries, _ in sections[:col]) + row + 1
+            y = 675 + 56*row
+            sheet.rect((x, y-1, x+20, y+11), color)
+            sheet.text(x+10, y+5, f"{number:02}", 9, PAPER, anchor="mm")
+            available = COLUMN - sheet.width(story.source, 11, BOLD) - 31
+            sheet.text(x+25, y, f"{story.where} / {story.beat}".upper(), 11, color, limit=available)
             sheet.text(x+COLUMN, y, story.source, 11, anchor="rt")
             sheet.text(x, y+14, story.headline, 17, limit=COLUMN)
-            sheet.paragraph(x, y+32, story.detail, 13, COLUMN, 2, 13)
-            if row < len(ids)-1:
-                sheet.line((x, y+59, x+COLUMN, y+59), RULE)
+            sheet.paragraph(x, y+30, story.detail, 13, COLUMN, 2, 12)
+            if row < len(stories)-1:
+                sheet.line((x, y+53, x+COLUMN, y+53), RULE)
 
     sheet.rect((LEFT, 958, RIGHT, 1010), "#e8dcc6")
     sheet.line((LEFT, 958, RIGHT, 958), INK, 2)
@@ -143,7 +184,7 @@ def render(land_path, fonts, output):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("land", type=Path)
+    parser.add_argument("land", type=Path, nargs="?", default=LAND_DATA)
     parser.add_argument("--fonts", type=Path, default=Path("C:/Windows/Fonts"))
     options = parser.parse_args()
     render(options.land, options.fonts, Path(__file__).with_name("world-edition-v4.png"))
