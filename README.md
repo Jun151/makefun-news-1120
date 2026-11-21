@@ -1,10 +1,8 @@
-
 [![Bounty](https://make.fun/badge/news-image-20261120.svg)](https://make.fun/bounty/news-image-20261120)
 [![Rank](https://make.fun/badge/news-image-20261120/Jun151/makefun-news-1120/rank.svg)](https://make.fun/bounty/news-image-20261120)
 [![Reward](https://make.fun/badge/news-image-20261120/Jun151/makefun-news-1120/reward.svg)](https://make.fun/bounty/news-image-20261120)
-# The World Edition
 
-[![make.fun · news-image-20261120](https://make.fun/badge/news-image-20261120.svg)](https://make.fun/bounty/news-image-20261120)
+# The World Edition
 
 2026年11月20日（金）の世界ニュース30件をまとめた英語版。Version 2は、3件のイラスト付きトップ記事、9件の図解付き記事、3地域欄の短報18件で構成する。小さな世界地図で掲載地域を示し、記事ごとに報道元または公表元を記した。
 
