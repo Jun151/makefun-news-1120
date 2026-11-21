@@ -1,11 +1,16 @@
-"""Write the finished editorial artwork to the make.fun output directory."""
+"""Export Version 2 by default, or select the preserved Version 1."""
 
+from argparse import ArgumentParser
 from os import environ
 from pathlib import Path
 
 
 def main() -> None:
-    artwork = Path(__file__).resolve().with_name("world-edition.png")
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--version", choices=("1", "2"), default="2")
+    version = parser.parse_args().version
+    filename = {"1": "world-edition.png", "2": "world-edition-newsroom.png"}[version]
+    artwork = Path(__file__).resolve().with_name(filename)
     png = artwork.read_bytes()
     if not png.startswith(b"\x89PNG\r\n\x1a\n") or len(png) > 1_048_576:
         raise ValueError("The artwork must be a PNG of at most 1 MiB")

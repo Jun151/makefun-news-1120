@@ -6,13 +6,15 @@
 
 [![make.fun · news-image-20261120](https://make.fun/badge/news-image-20261120.svg)](https://make.fun/bounty/news-image-20261120)
 
-2026年11月20日（金）の世界ニュース7本を、英語の新聞特集面として構成した。主記事は深圳での米中ロ首脳会談を受けた20日の発言。地図と記事に共通の番号を振り、外交、安全保障、気候、司法、内戦、地震のニュースを位置と結び付けた。
+2026年11月20日（金）の世界ニュース30件をまとめた英語版。Version 2は、3件のイラスト付きトップ記事、9件の図解付き記事、3地域欄の短報18件で構成する。小さな世界地図で掲載地域を示し、記事ごとに報道元または公表元を記した。
 
-![The World Edition, 20 November 2026](world-edition.png)
+![The World Edition, 20 November 2026, Version 2](world-edition-newsroom.png)
+
+[Version 1の新聞版](world-edition.png)
 
 ## 実行
 
-Python 3.13で、プロジェクト直下から `python main.py` を実行する。既定の出力先は `/output/entry.png`。標準ライブラリで同梱の完成画像を読み、同じバイト列を書き出す。ネットワーク接続や依存パッケージのインストールは不要。
+Python 3.13で、プロジェクト直下から `python main.py` を実行するとVersion 2を出力する。既定の出力先は `/output/entry.png`。標準ライブラリで同梱の完成画像を読み、同じバイト列を書き出す。Version 1は `python main.py --version 1` で選択できる。各版の出力を並べて保存する場合は、出力先を版ごとに指定する。ネットワーク接続や依存パッケージのインストールは不要。
 
 Windowsでプロジェクト内の `output/entry.png` に出力する場合は、PowerShellで以下を実行する。
 
@@ -24,11 +26,17 @@ Get-FileHash output/entry.png -Algorithm SHA256
 
 ### 画像を編集する場合
 
-`render.py` は制作用スクリプト。Pillow 12.3.0、WindowsのGeorgiaとArial、および公開のNatural Earth 1:110m陸域GeoJSONを使用した。地図データを保存して `python render.py <land.geojson>` を実行すると、同梱の `world-edition.png` を再生成する。フォントの保存先は `--fonts` で指定できる。 [Natural Earth 陸域データ](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_land.geojson)
+`render_newsroom.py` はVersion 2の制作用スクリプト。Pillow 12.3.0、WindowsのArialとGeorgia、Natural Earth 1:110m陸域GeoJSONのローカルコピーを用意し、`python render_newsroom.py <land.geojson>` で `world-edition-newsroom.png` を生成する。Version 1の制作用スクリプトは `render.py`。フォントの保存先は `--fonts` で指定できる。 [Natural Earth 陸域データ](https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_110m_land.geojson)
 
-## ニュース出典
+### Version 2の出典と掲載基準
 
-確認日時は2026年11月21日15:19〜15:23 JST（06:19〜06:23 UTC）。日付は出来事の現地時刻で確認した。
+30件それぞれの見出し、媒体名、出典URLは [edition_news.py](edition_news.py) に記録した。確認は2026年11月21日17:14〜17:20 JST。現地で11月20日に起きた出来事、または同日に初めて公に報じられた内容を採用した。ワシントン州の工場事故は5月に起きたため、20日に公表された調査結果のみを掲載した。台湾の空売り制限は発表の翌日である20日の施行を扱った。Anthropicの上場初日とケニアの鉱山事業の選定は19日の出来事なので外した。
+
+ガザの死者数にはAPとAl Jazeeraの報道に差があったため、紙面では人数を省いた。英国・EU首脳会議の日付はEU理事会の公式記録で照合した。 [AP・ガザ](https://apnews.com/article/16c39c487a23b53b73c5eabb7f0fd57a) [EU理事会](https://www.consilium.europa.eu/en/meetings/international-summit/2026/11/20/)
+
+## Version 1のニュース出典
+
+初回確認は2026年11月21日15:19〜15:23 JST（06:19〜06:23 UTC）。
 
 | 記事 | 11月20日の出来事と照合した資料 |
 | --- | --- |
@@ -48,7 +56,7 @@ Get-FileHash output/entry.png -Algorithm SHA256
 
 1. 承認後、GitHub上に応募者が所有する新規公開リポジトリを作成する。リポジトリ名の候補は `the-world-edition-20261120`。GitHub AboutのWebsiteに公式課題URLを設定し、トピックに `makefun` を追加する。
 2. 本READMEの先頭に、確定したOWNERとREPOを含む公式の順位・賞金バッジを追加し、それぞれ公式リーダーボード・課題ページにリンクする。画像URLは `https://make.fun/badge/news-image-20261120/OWNER/REPO/rank.svg` と `https://make.fun/badge/news-image-20261120/OWNER/REPO/reward.svg`。make.funにGitHubリポジトリ所有者としてログインするか、公式要件に従い紐付け済みの公開ウォレットアドレスを `.makefun/owner.json` に記載する。
-3. 応募内容をコミットし、GitHubへpushする。提出するコミットは `git rev-parse HEAD` で取得する。生成した `output/`、公式CLIキット、会話ログ、キーやウォレットファイルはリポジトリの外で管理する。同梱する画像は `world-edition.png`。
+3. 応募内容をコミットし、GitHubへpushする。提出するコミットは `git rev-parse HEAD` で取得する。生成した `output/`、公式CLIキット、会話ログ、キーやウォレットファイルは提出対象から除外する。同梱する画像は `world-edition-newsroom.png` と、保存用の `world-edition.png`。
 4. 下記のローカル検査で、元のCodexログを公式CLIで再収集し、最終コミットを検査する。ログバンドルは、提出前に収録内容と公式CLIの伏字処理を確認する。
 5. 承認後、公式ガイドに従い、make.funアカウントと署名用Solanaウォレットを紐付ける。最終承認後に、公式CLIで署名と提出を行い、返った提出IDのステータスを確認する。
 
